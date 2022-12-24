@@ -49,6 +49,8 @@ app.get('/ticket', async (req, res) => {
   } 
 })
 
+
+
 app.post('/winner', async (req, res)=>{
   try{
     const data = await Winner.create(req.body)
@@ -66,6 +68,21 @@ app.post('/winner', async (req, res)=>{
 }
 
 })
+app.put('/register', async(req, res) => {
+    try{
+      const updateUser =await Users.findOneAndUpdate(req.body)
+      if(updateUser){
+        res.json({
+          msg: 'user updated'
+        })
+      }else{
+        msg:"error"
+      }
+    }
+    catch(e){
+      console.log(e)
+    }
+  })
 
 app.post('/tickets/:ticketNo', (req, res) => {
   console.log(req.params.ticketNo)
@@ -73,14 +90,14 @@ app.post('/tickets/:ticketNo', (req, res) => {
 app.get('/users/',async(req,res)=>{
  const usersList = await Users.findOne({name: req.query.name})
  const searchWinColor = await Winner.findOne({ticketNo: req.query.ticketNo})
-    if(searchWinColor?.color , req.query.color & usersList){
+    if(searchWinColor?.color === req.query.color && usersList){
         res.json({
-            msg: 'you are winner'
+            errMsg: 'you are winner'
         })
     }else{
         if(!usersList){
             res.json({
-                msg: 'you are not register'
+                errMsg: 'you are not register'
             }) 
     }else{
         res.json({
